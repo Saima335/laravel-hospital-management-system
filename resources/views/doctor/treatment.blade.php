@@ -194,7 +194,8 @@
 </div>
 
 <script>
-    var count=0;
+    var count = 0;
+    var count1=0;
     function medicineSelected() {
         var e = document.getElementById("medicine_id");
         var value = e.value;
@@ -202,22 +203,68 @@
     }
     $("#medicineForm").submit(function (e) {
         e.preventDefault();
+        let medid =count1++;
         let medicineid = $('#medicine_id').val();
         let medicinename = medicineSelected();
         let dosage = $('#dosage').val();
         let days = $('#days').val();
-        $('#add').append(`<input type="hidden" id="other_medicine_id" name="medicine_id[]" value=` + medicineid + `>
-                        <input type="hidden" id="other_medicine_dosage" name="dosage[]" value=`+ dosage + `>
-                        <input type="hidden" id="other_medicine_days" name="days[]" value=`+ days + `>`)
+        $('#add').append(`<div class="medicineids" ><input type="hidden" id=` + `other_medicine_id` + medid + ` name="medicine_id[` + (count1 - 1) + `]" value=` + medicineid + `></div>
+        <div class="medicinedosages" ><input type="hidden" id=` + `other_medicine_dosage` + medid + ` name="dosage[` + (count1 - 1) + `]" value=`+ dosage + `></div>
+        <div class="medicinedays" ><input type="hidden" id=` + `other_medicine_days` + medid + ` name="days[` + (count1 - 1) + `]" value=`+ days + `></div>`)
 
-        $('#bodyrow').append('<tr style="background-color:DodgerBlue;" id=' + 'mpid' + medicineid + '><td style="padding:10px; color:white;">' + medicinename + '</td><td style="padding:10px; color:white;">' + dosage + '</td><td style="padding:10px; color:white;">' + days + '</td><td style="padding:10px; color:white;"><a href="javascript:void(0)" onclick=deleteMedicinePrescribed(' + medicineid + ') class="btn btn-danger">Delete</a></td>');
+        $('#bodyrow').append('<tr style="background-color:DodgerBlue;" id=' + 'mpid' + medicineid + '><td style="padding:10px; color:white;">' + medicinename + '</td><td style="padding:10px; color:white;">' + dosage + '</td><td style="padding:10px; color:white;">' + days + '</td><td style="padding:10px; color:white;"><a href="javascript:void(0)" onclick=deleteMedicinePrescribed(' + medicineid + ','+medid+') class="btn btn-danger">Delete</a></td>');
         $('#medicineForm')[0].reset();
         $('#medicineModal').modal('hide');
     });
 
-    function deleteMedicinePrescribed(id) {
+    function deleteMedicinePrescribed(id1, id) {
         if (confirm("Do you really want to delete this record?")) {
-            $("#mpid" + id).remove();
+            $("#mpid" + id1).remove();
+            $("#other_medicine_id" + id).remove();
+            $("#other_medicine_dosage" + id).remove();
+            $("#other_medicine_days" + id).remove();
+            var start = false;
+            $(".medicineids").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "medicine_id[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
+            });
+            start = false;
+            $(".medicinedosages").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "dosage[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
+            });
+            start = false;
+            $(".medicinedays").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "days[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
+            });
+
+            $(".medicineids").each(function(index) {
+                $(this).find("input").each(function() {
+                    console.log(this.name);
+                });
+            });
         };
     }
 
@@ -228,10 +275,10 @@
         let testname = $('#test_name').val();
         let testdate = $('#test_date').val();
         let amount = $('#amount').val();
-        $('#addTest').append(`<div class="testnames" ><input type="hidden" id=` + `other_test_id` + testid + ` name="test_name[`+(count-1)+`]" value='` + testname + `'></div>
-        <div class="testdates" ><input type="hidden" id=` + `other_test_date` + testid + ` name="test_date[`+(count-1)+`]" value=`+ testdate + `></div>
-        <div class="testamounts" ><input type="hidden" id=` + `other_amount` + testid + ` name="amount[`+(count-1)+`]" value=`+ amount + `></div>`)
-        $('#bodyrowTest').append('<tr style="background-color:DodgerBlue;" id=' + 'tpid' + testid + '><td style="padding:10px; color:white;">' + testname + '</td><td style="padding:10px; color:white;">' + testdate + '</td><td style="padding:10px; color:white;">' + amount + '</td><td style="padding:10px; color:white;"><a href="javascript:void(0)" onclick=deleteTest(' + testid +') class="btn btn-danger">Delete</a></td>');
+        $('#addTest').append(`<div class="testnames" ><input type="hidden" id=` + `other_test_id` + testid + ` name="test_name[` + (count - 1) + `]" value='` + testname + `'></div>
+        <div class="testdates" ><input type="hidden" id=` + `other_test_date` + testid + ` name="test_date[` + (count - 1) + `]" value=` + testdate + `></div>
+        <div class="testamounts" ><input type="hidden" id=` + `other_amount` + testid + ` name="amount[` + (count - 1) + `]" value=` + amount + `></div>`)
+        $('#bodyrowTest').append('<tr style="background-color:DodgerBlue;" id=' + 'tpid' + testid + '><td style="padding:10px; color:white;">' + testname + '</td><td style="padding:10px; color:white;">' + testdate + '</td><td style="padding:10px; color:white;">' + amount + '</td><td style="padding:10px; color:white;"><a href="javascript:void(0)" onclick=deleteTest(' + testid + ') class="btn btn-danger">Delete</a></td>');
         $('#testForm')[0].reset();
         $('#testModal').modal('hide');
     });
@@ -241,50 +288,50 @@
             $("#tpid" + id).remove();
 
             $("#other_test_id" + id).remove();
-        $("#other_test_date" + id).remove();
-        $("#other_amount" + id).remove();
-        var start=false;
-        $(".testnames").each(function(index) {
-            $(this).find("input").each(function() {
-                if(index+1===id){
-                    start=true;
-                }
-                else if(start===true || id===0){
-                    var prefix = "test_name[" + (index-1) + "]";
-                    this.name = prefix;
-                }
+            $("#other_test_date" + id).remove();
+            $("#other_amount" + id).remove();
+            var start = false;
+            $(".testnames").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "test_name[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
             });
-        });
-        start=false;
-        $(".testdates").each(function(index) {
-            $(this).find("input").each(function() {
-                if(index+1===id){
-                    start=true;
-                }
-                else if(start===true || id===0){
-                    var prefix = "test_date[" + (index-1) + "]";
-                    this.name = prefix;
-                }
+            start = false;
+            $(".testdates").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "test_date[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
             });
-        });
-        start=false;
-        $(".testamounts").each(function(index) {
-            $(this).find("input").each(function() {
-                if(index+1===id){
-                    start=true;
-                }
-                else if(start===true || id===0){
-                    var prefix = "amount[" + (index-1) + "]";
-                    this.name = prefix;
-                }
+            start = false;
+            $(".testamounts").each(function (index) {
+                $(this).find("input").each(function () {
+                    if (index + 1 === id) {
+                        start = true;
+                    }
+                    else if (start === true || id === 0) {
+                        var prefix = "amount[" + (index - 1) + "]";
+                        this.name = prefix;
+                    }
+                });
             });
-        });
 
-        // $(".testnames").each(function(index) {
-        //     $(this).find("input").each(function() {
-        //         console.log(this.name);
-        //     });
-        // });
+            // $(".testnames").each(function(index) {
+            //     $(this).find("input").each(function() {
+            //         console.log(this.name);
+            //     });
+            // });
         };
     }
 </script>

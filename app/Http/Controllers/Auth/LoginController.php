@@ -39,6 +39,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest',['except'=>['logout','userLogout']]);
+        $this->middleware('guest:patient')->except('logout');
         $this->middleware('guest:admin')->except('logout');
         $this->middleware('guest:laboratory')->except('logout');
         $this->middleware('guest:doctor')->except('logout');
@@ -49,48 +50,63 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    public function authenticateAdmin(Request $request){
-        $this->validate($request,[
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
+    // public function authenticatePatient(Request $request){
+    //     $this->validate($request,[
+    //         'email'=>'required|email',
+    //         'password'=>'required'
+    //     ]);
 
-        if(Auth::guard('admin')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
-            return redirect()->route('admin.dashboard');
-        }
-        else{
-            session()->flash('error','Either Email/Password is incorrect');
-            return back()->withInput($request->only('email'));
-        }
-    }
+    //     if(Auth::guard('patient')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
+    //         return redirect()->route('home');
+    //     }
+    //     else{
+    //         session()->flash('error','Either Email/Password is incorrect');
+    //         return back()->withInput($request->only('email'));
+    //     }
+    // }
 
-    public function authenticateDoctor(Request $request){
-        $this->validate($request,[
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
+    // public function authenticateAdmin(Request $request){
+    //     $this->validate($request,[
+    //         'email'=>'required|email',
+    //         'password'=>'required'
+    //     ]);
 
-        if(Auth::guard('doctor')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
-            return redirect()->route('doctor.dashboard');
-        }
-        else{
-            session()->flash('error','Either Email/Password is incorrect');
-            return back()->withInput($request->only('email'));
-        }
-    }
+    //     if(Auth::guard('admin')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
+    //         return redirect()->route('admin.dashboard');
+    //     }
+    //     else{
+    //         session()->flash('error','Either Email/Password is incorrect');
+    //         return back()->withInput($request->only('email'));
+    //     }
+    // }
 
-    public function authenticateLaboratory(Request $request){
-        $this->validate($request,[
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
+    // public function authenticateDoctor(Request $request){
+    //     $this->validate($request,[
+    //         'email'=>'required|email',
+    //         'password'=>'required'
+    //     ]);
 
-        if(Auth::guard('laboratory')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
-            return redirect()->route('laboratory.dashboard');
-        }
-        else{
-            session()->flash('error','Either Email/Password is incorrect');
-            return back()->withInput($request->only('email'));
-        }
-    }
+    //     if(Auth::guard('doctor')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
+    //         return redirect()->route('doctor.dashboard');
+    //     }
+    //     else{
+    //         session()->flash('error','Either Email/Password is incorrect');
+    //         return back()->withInput($request->only('email'));
+    //     }
+    // }
+
+    // public function authenticateLaboratory(Request $request){
+    //     $this->validate($request,[
+    //         'email'=>'required|email',
+    //         'password'=>'required'
+    //     ]);
+
+    //     if(Auth::guard('laboratory')->attempt(['email'=>$request->email, 'password'=>$request->password],$request->get('remember'))){
+    //         return redirect()->route('laboratory.dashboard');
+    //     }
+    //     else{
+    //         session()->flash('error','Either Email/Password is incorrect');
+    //         return back()->withInput($request->only('email'));
+    //     }
+    // }
 }

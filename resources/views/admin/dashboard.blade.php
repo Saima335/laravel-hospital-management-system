@@ -26,6 +26,21 @@
       {{--@include('admin.navbar')--}}
         <!-- partial -->
         {{--@include('admin.body')--}}
+        {{--@if(Auth::guard('admin')->check())
+        Hello {{Auth::guard('admin')->user()->name}}
+        @endif
+        @if(Auth::guard('web')->check())
+        Hello {{Auth::guard('web')->user()->name}}
+        @endif
+        @if(Auth::guard('patient')->check())
+        Hello {{Auth::guard('patient')->user()->name}}
+        @endif
+        @if(Auth::guard('doctor')->check())
+        Hello {{Auth::guard('doctor')->user()->name}}
+        @endif
+        @if(Auth::guard('laboratory')->check())
+        Hello {{Auth::guard('laboratory')->user()->name}}
+        @endif--}}
     </div>
     <!-- container-scroller -->
     @include('admin.script')

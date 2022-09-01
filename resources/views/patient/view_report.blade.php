@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.patient-app')
 
 @section('content')
 <div class="container-scroller">
       <!-- partial:partials/_sidebar.html -->
-      @include('sidebar')
+      @include('patient.sidebar')
       <!-- partial -->
       <div class="container-fluid page-body-wrapper" align="center" style="padding-top:100px">
         <div class="container">

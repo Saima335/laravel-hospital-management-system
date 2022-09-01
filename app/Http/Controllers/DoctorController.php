@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator,Auth;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class DoctorController extends Controller
 {
@@ -53,7 +54,7 @@ class DoctorController extends Controller
         //     ["status","=","Approved"],
         //     ["doctor_id","=",Auth::user()->id]
         // ])->get();
-        $patients=\App\Models\User::all();
+        $patients=\App\Models\Patient::all();
         $medicines=\App\Models\Medicine::all();
         // $prescribedmedicines=\App\Models\PrescribedMedicine::all();
         return view('doctor.treatment',['patients'=>$patients,'medicines'=>$medicines]);
@@ -96,5 +97,59 @@ class DoctorController extends Controller
     public function try(Request $request){
         dd($request->all());
 
+    }
+
+    public function showforgetForm(){
+        return view('doctor.password.forget');
+    }
+
+    public function sendResetLink(Request $request){
+        $request->validate([
+            'email'=>'required|email|exists:doctors,email'
+        ]);
+        $token=\Str::random(64);
+        \DB::table('password_resets')->insert([
+            'email'=>$request->email,
+            'token'=>$token,
+            'created_at'=>Carbon::now(),
+        ]);
+        $action_link=route('doctor.resetFormShow',['token'=>$token,'email'=>$request->email]);
+        $body="We have received a request to reset the password <b>Hospital Management System</b> account associated with ".$request->email.".You can reset your password by clicking the link below.";
+        \Mail::send('layouts\email-forget',['action_link'=>$action_link,'body'=>$body],function($message) use ($request){
+            $message->from('noreply@example.com','Hospital Management System');
+            $message->to($request->email,'Doctor Name')
+            ->subject('Reset Password');
+        });
+        return back()->with('success','We have e-mailed your password reset link');
+    }
+    public function showResetForm(Request $request,$token=null){
+        return view('doctor.password.reset')->with(['token'=>$token,'email'=>$request->email]);
+    }
+
+    public function resetPassword(Request $request){
+        $request->validate([
+            'email'=>'required|email|exists:doctors,email',
+            'password'=>'required|min:5|confirmed',
+            'password_confirmation'=>'required',
+       ]);
+
+       $check_token = \DB::table('password_resets')->where([
+            'email'=>$request->email,
+            'token'=>$request->token,
+       ])->first();
+
+       if(!$check_token){
+           return back()->withInput()->with('fail', 'Invalid token');
+       }else{
+            \App\Models\Doctor::where('email', $request->email)->update([
+               'password'=>\Hash::make($request->password)
+           ]);
+
+           \DB::table('password_resets')->where([
+               'email'=>$request->email
+           ])->delete();
+
+           return redirect()->route('doctor.login')->with('info', 'Your password has been changed! You can login with new password')->with('verifiedEmail', $request->email);
+       }
     }
 }

@@ -30,9 +30,12 @@ class Authenticate extends Middleware
                 return route('laboratory.login');
             }
             if (Route::is('patient.*')){
-                return route('login');
+                return route('patient.login');
             }
-            // return route('login');
+            // if (Route::is('patient.*')){
+            //     return route('login');
+            // }
+            return route('login');
         }
     }
 
@@ -62,18 +65,24 @@ class Authenticate extends Middleware
                     }
                     $this->unauthenticated($request,['laboratory']);
                     break;
-                case "web":
+                case "patient":
                     if(Auth::guard($guard)->check()){
-                        return $this->auth->shouldUse('web');
+                        return $this->auth->shouldUse('patient');
                     }
-                    $this->unauthenticated($request,['web']);
+                    $this->unauthenticated($request,['patient']);
                     break;
-                // default:
+                // case "web":
                 //     if(Auth::guard($guard)->check()){
                 //         return $this->auth->shouldUse('web');
                 //     }
                 //     $this->unauthenticated($request,['web']);
                 //     break;
+                default:
+                    if(Auth::check()){
+                        return $this->auth->shouldUse('web');
+                    }
+                    $this->unauthenticated($request,['web']);
+                    break;
             }
         }
     }

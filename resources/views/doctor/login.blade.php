@@ -10,6 +10,11 @@
             </div>
         </div>
         @endif
+        @if (Session::get('info'))
+            <div class="alert alert-info">
+                {{ Session::get('info') }}
+            </div>
+        @endif
         <div class="col-md-8">
             <div class="card" style="border-color:white;">
                 <div class="card-header" style="border-color:white;">Doctor {{ __('Login') }}</div>
@@ -65,7 +70,7 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link" href="{{ route('doctor.forgetpassword') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif

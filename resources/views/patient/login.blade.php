@@ -1,4 +1,4 @@
-@extends('layouts.laboratory-app')
+@extends('layouts.patient-app')
 
 @section('content')
 <div class="container">
@@ -17,10 +17,10 @@
         @endif
         <div class="col-md-8">
             <div class="card" style="border-color:white;">
-                <div class="card-header" style="border-color:white;">Laboratory Technician {{ __('Login') }}</div>
+                <div class="card-header" style="border-color:white;">Patient {{ __('Login') }}</div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('laboratory.authenticate') }}">
+                <div class="card-body"  >
+                    <form method="POST" action="{{ route('patient.authenticate') }}">
                         @csrf
 
                         <div class="row mb-3">
@@ -68,9 +68,8 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
-
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('laboratory.forgetpassword') }}">
+                                    <a class="btn btn-link" href="{{ route('patient.forgetpassword') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif

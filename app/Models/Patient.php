@@ -8,11 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class Patient extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // protected $table = 'patients';
+    protected $guard = 'Patient';
 
     /**
      * The attributes that are mass assignable.
@@ -43,4 +43,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function appointments(){
+        return $this->hasMany(Appointment::class,'patient_id','id');
+    }
+
+    public function treatments(){
+        return $this->hasMany(Treatment::class,'patient_id','id');
+    }
 }

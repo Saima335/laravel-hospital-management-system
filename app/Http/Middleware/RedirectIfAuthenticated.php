@@ -34,12 +34,15 @@ class RedirectIfAuthenticated
                     case "laboratory":
                         return redirect()->route('laboratory.dashboard');
                         break;
-                    case "web":
-                        return redirect()->route('home');
+                    case "patient":
+                        return redirect()->route('patient.dashboard');
                         break;
-                    // default:
+                    // case "web":
                     //     return redirect()->route('home');
                     //     break;
+                    default:
+                        return redirect()->route('home');
+                        break;
                 }
             }
         }

@@ -99,7 +99,7 @@
                                       Log in
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                      <a class="dropdown-item" href="{{ route('login') }}">Log in as Patient</a>
+                                      <a class="dropdown-item" href="{{ route('patient.login') }}">Log in as Patient</a>
                                       <a class="dropdown-item" href="{{ route('admin.login') }}">Log in as Admin</a>
                                       <a class="dropdown-item" href="{{ route('doctor.login') }}">Log in as Doctor</a>
                                       <a class="dropdown-item" href="{{ route('laboratory.login') }}">Log in as Laboratory Technician</a>

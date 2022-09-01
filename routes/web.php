@@ -17,23 +17,33 @@ Route::get('/', function () {
     $doctors=\App\Models\Doctor::all();
     return view('welcome',['doctors'=>$doctors]);
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userLogout'])->name('user.logout');
+
 Route::group(['prefix'=>'patient'],function(){
-    Auth::routes();
-    Route::group(['middleware'=>'auth'],function(){
-        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-        Route::get('/make_appointment_view', [App\Http\Controllers\HomeController::class, 'appointmentView']);
-        Route::post('/appointment', [App\Http\Controllers\HomeController::class, 'appointment']);
-        Route::get('/myappointment', [App\Http\Controllers\HomeController::class, 'myappointment']);
-        Route::get('/cancel_appoint/{id}', [App\Http\Controllers\HomeController::class, 'cancelappoint']);
-        Route::get('/viewreports', [App\Http\Controllers\HomeController::class, 'viewreports']);
-        Route::post('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userLogout'])->name('user.logout');
+    Route::group(['middleware'=>'guest:patient'],function(){
+        Route::view('/register','patient.register')->name('patient.register');
+        Route::post('/register',[App\Http\Controllers\PatientController::class,'add'])->name('patient.add');
+        Route::view('/login','patient.login')->name('patient.login');
+        Route::post('/login',[App\Http\Controllers\PatientController::class,'authenticate'])->name('patient.authenticate');
+        Route::get('/password/forget',[App\Http\Controllers\PatientController::class,'showforgetForm'])->name('patient.forgetpassword');
+        Route::post('/password/forget',[App\Http\Controllers\PatientController::class,'sendResetLink'])->name('patient.forgetpasswordlink');
+        Route::get('/password/reset/{token}',[App\Http\Controllers\PatientController::class,'showResetForm'])->name('patient.resetFormShow');
+        Route::post('/password/reset',[App\Http\Controllers\PatientController::class,'resetPassword'])->name('patient.resetPassword');
+    });
+    Route::group(['middleware'=>'auth:patient'],function(){
+        Route::get('/home', [App\Http\Controllers\PatientController::class, 'index'])->name('patient.dashboard');
+        Route::get('/make_appointment_view', [App\Http\Controllers\PatientController::class, 'appointmentView']);
+        Route::post('/appointment', [App\Http\Controllers\PatientController::class, 'appointment']);
+        Route::get('/myappointment', [App\Http\Controllers\PatientController::class, 'myappointment']);
+        Route::get('/cancel_appoint/{id}', [App\Http\Controllers\PatientController::class, 'cancelappoint']);
+        Route::get('/viewreports', [App\Http\Controllers\PatientController::class, 'viewreports']);
+        Route::post('/logout', [App\Http\Controllers\PatientController::class, 'logout'])->name('patient.logout');
     });
 });
-
-// Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Route::post('/user/logout', [App\Http\Controllers\Auth\LoginController::class, 'userLogout'])->name('user.logout');
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware'=>'guest:admin'],function(){
@@ -41,6 +51,11 @@ Route::group(['prefix'=>'admin'],function(){
         Route::post('/register',[App\Http\Controllers\AdminController::class,'add'])->name('admin.add');
         Route::view('/login','admin.login')->name('admin.login');
         Route::post('/login',[App\Http\Controllers\AdminController::class,'authenticate'])->name('admin.authenticate');
+        Route::get('/password/forget',[App\Http\Controllers\AdminController::class,'showforgetForm'])->name('admin.forgetpassword');
+        Route::post('/password/forget',[App\Http\Controllers\AdminController::class,'sendResetLink'])->name('admin.forgetpasswordlink');
+        Route::get('/password/reset/{token}',[App\Http\Controllers\AdminController::class,'showResetForm'])->name('admin.resetFormShow');
+        Route::post('/password/reset',[App\Http\Controllers\AdminController::class,'resetPassword'])->name('admin.resetPassword');
+
     });
     Route::group(['middleware'=>'auth:admin'],function(){
         Route::get('/dashboard',[App\Http\Controllers\DashboardController::class,'dashboardAdmin'])->name('admin.dashboard');
@@ -89,6 +104,10 @@ Route::group(['prefix'=>'doctor'],function(){
         Route::post('/register',[App\Http\Controllers\DoctorController::class,'add'])->name('doctor.add');
         Route::view('/login','doctor.login')->name('doctor.login');
         Route::post('/login',[App\Http\Controllers\DoctorController::class,'authenticate'])->name('doctor.authenticate');
+        Route::get('/password/forget',[App\Http\Controllers\DoctorController::class,'showforgetForm'])->name('doctor.forgetpassword');
+        Route::post('/password/forget',[App\Http\Controllers\DoctorController::class,'sendResetLink'])->name('doctor.forgetpasswordlink');
+        Route::get('/password/reset/{token}',[App\Http\Controllers\DoctorController::class,'showResetForm'])->name('doctor.resetFormShow');
+        Route::post('/password/reset',[App\Http\Controllers\DoctorController::class,'resetPassword'])->name('doctor.resetPassword');
     });
     Route::group(['middleware'=>'auth:doctor'],function(){
         Route::get('/dashboard',[App\Http\Controllers\DashboardController::class,'dashboardDoctor'])->name('doctor.dashboard');
@@ -107,6 +126,10 @@ Route::group(['prefix'=>'laboratory'],function(){
         Route::post('/register',[App\Http\Controllers\LaboratoryController::class,'add'])->name('laboratory.add');
         Route::view('/login','laboratory.login')->name('laboratory.login');
         Route::post('/login',[App\Http\Controllers\LaboratoryController::class,'authenticate'])->name('laboratory.authenticate');
+        Route::get('/password/forget',[App\Http\Controllers\LaboratoryController::class,'showforgetForm'])->name('laboratory.forgetpassword');
+        Route::post('/password/forget',[App\Http\Controllers\LaboratoryController::class,'sendResetLink'])->name('laboratory.forgetpasswordlink');
+        Route::get('/password/reset/{token}',[App\Http\Controllers\LaboratoryController::class,'showResetForm'])->name('laboratory.resetFormShow');
+        Route::post('/password/reset',[App\Http\Controllers\LaboratoryController::class,'resetPassword'])->name('laboratory.resetPassword');
     });
     Route::group(['middleware'=>'auth:laboratory'],function(){
         Route::get('/dashboard',[App\Http\Controllers\DashboardController::class,'dashboardLaboratory'])->name('laboratory.dashboard');
